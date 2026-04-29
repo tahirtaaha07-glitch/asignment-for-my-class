@@ -1,0 +1,54 @@
+{
+    "users": {
+        "admin": "1234"
+    },
+    "products": [
+        {
+            "id": 4,
+            "name": "hdd",
+            "price": 1000,
+            "discount": 0,
+            "category": "Computer parts",
+            "image": "data:image/jpeg;base64,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",
+            "stock": "instock"
+        },
+        {
+            "id": 3,
+            "name": "cor i 3 1 gen laptop",
+            "price": 25000,
+            "discount": 0,
+            "category": "Laptop",
+            "image": "https://i.pinimg.com/736x/86/76/9f/86769ff3c8458d8ac300794d76204f04.jpg",
+            "stock": "instock"
+        },
+        {
+            "id": 2,
+            "name": "Gaming Pc",
+            "price": 200000,
+            "discount": 0,
+            "category": "Gaming pc",
+            "image": "https://i.pinimg.com/1200x/e3/de/d6/e3ded6b09a25c557fe2277a63bbc123f.jpg",
+            "stock": "instock"
+        },
+        {
+            "id": 1,
+            "name": "ram 16 gb",
+            "price": 15500,
+            "discount": 0,
+            "category": "Computer parts",
+            "image": "https://i.pinimg.com/1200x/60/4d/f4/604df4a873f4a8ea12ffc582813bed84.jpg",
+            "stock": "instock"
+        }
+    ],
+    "categories": [
+        "Gaming pc",
+        "Laptop",
+        "Watch",
+        "Computer parts"
+    ],
+    "ad": {
+        "title": "friend find products is star from",
+        "price": "1000",
+        "image": "https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?w=1200"
+    }
+}

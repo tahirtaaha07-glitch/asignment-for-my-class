@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gully Store | Shop</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .glass { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.05); }
+        .product-card { transition: all 0.3s ease; }
+    </style>
+</head>
+<body class="bg-[#050505] text-white no-scrollbar">
+
+    <nav class="flex flex-col md:flex-row justify-between items-center px-6 md:px-10 py-6 sticky top-0 bg-black/90 z-50 gap-4 border-b border-white/5">
+        <div class="text-2xl font-black italic uppercase tracking-tighter">
+            GULLY<span class="text-orange-600">STORE</span>
+        </div>
+
+        <div class="glass flex items-center px-6 py-3 rounded-full w-full max-w-xl border border-white/10">
+            <svg class="w-4 h-4 text-zinc-500 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+            <input type="text" id="searchInput" onkeyup="filterProducts()" placeholder="SEARCH PRODUCTS..." 
+                   class="bg-transparent border-none outline-none text-white w-full text-[10px] font-black uppercase tracking-widest">
+        </div>
+
+        <div class="flex items-center gap-6">
+            {% if user %}
+                <div class="flex items-center gap-3">
+                    <img src="{{ user.pic }}" class="w-8 h-8 rounded-full border border-orange-600">
+                    <a href="/logout" class="text-[10px] font-black uppercase text-zinc-400 hover:text-white">Logout</a>
+                </div>
+            {% else %}
+                <a href="/login" class="bg-white text-black px-6 py-2 rounded-full font-black text-[10px] uppercase">Login</a>
+            {% endif %}
+        </div>
+    </nav>
+
+    <main class="max-w-7xl mx-auto p-6 md:p-10 space-y-12">
+        
+        <section class="relative h-[400px] rounded-[3rem] overflow-hidden group">
+            <img src="{{ ad.image }}" class="absolute inset-0 w-full h-full object-cover transition duration-700 group-hover:scale-110">
+            <div class="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent"></div>
+            <div class="absolute bottom-12 left-12 space-y-2">
+                <h2 class="text-5xl md:text-7xl font-black uppercase italic leading-none">{{ ad.title }}</h2>
+                <p class="text-orange-600 font-black text-2xl italic uppercase">Starting from RS {{ ad.price }}</p>
+                <button class="bg-white text-black px-10 py-4 rounded-full font-black uppercase text-xs mt-4 hover:bg-orange-600 hover:text-white transition">Shop Collection</button>
+            </div>
+        </section>
+
+        <section class="space-y-6">
+            <div class="flex items-center justify-between">
+                <h3 class="text-[10px] font-black uppercase tracking-[0.3em] text-zinc-500">Browse Categories</h3>
+            </div>
+            <div class="flex gap-3 overflow-x-auto no-scrollbar pb-2">
+                <button onclick="filterCategory('ALL')" class="cat-btn bg-orange-600 text-white px-10 py-4 rounded-full font-black text-[10px] uppercase whitespace-nowrap shadow-lg shadow-orange-600/20">ALL</button>
+                {% for cat in categories %}
+                <button onclick="filterCategory('{{ cat }}')" class="cat-btn bg-zinc-900 border border-white/5 text-zinc-400 px-10 py-4 rounded-full font-black text-[10px] uppercase whitespace-nowrap hover:bg-white/5 hover:text-white transition">
+                    {{ cat }}
+                </button>
+                {% endfor %}
+            </div>
+        </section>
+
+        <section>
+            <div id="productGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+                {% for item in items %}
+                <div class="product-card group" data-category="{{ item.category }}">
+                    <div class="glass p-5 rounded-[2.5rem] border border-white/5 hover:border-orange-600/30 transition-all duration-500 hover:-translate-y-2">
+                        <div class="relative h-64 mb-6 overflow-hidden rounded-[1.5rem]">
+                            <img src="{{ item.image }}" class="w-full h-full object-cover group-hover:scale-110 transition duration-700">
+                            {% if item.stock == 'outofstock' %}
+                                <div class="absolute inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center">
+                                    <span class="text-[10px] font-black uppercase bg-red-600 px-4 py-2 rounded-full">Sold Out</span>
+                                </div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="space-y-1 px-2">
+                            <p class="text-[8px] font-black text-orange-600 uppercase tracking-widest">{{ item.category }}</p>
+                            <h3 class="product-name text-lg font-black uppercase leading-tight">{{ item.name }}</h3>
+                            <div class="flex justify-between items-center pt-4">
+                                <span class="text-xl font-black italic">RS {{ item.price }}</span>
+                                <button onclick="sendWhatsApp('{{ item.name }}', '{{ item.price }}')" 
+                                        class="bg-white text-black p-4 rounded-2xl hover:bg-orange-600 hover:text-white transition shadow-xl">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"></path></svg>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            
+            <div id="noResults" class="hidden text-center py-20">
+                <p class="text-zinc-500 font-black uppercase italic text-xl">No products found matching your search</p>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="border-t border-white/5 p-10 text-center">
+        <p class="text-[10px] font-black uppercase text-zinc-600">© 2026 PRO STORE | Powered by FastAPI</p>
+    </footer>
+
+    <script>
+        function sendWhatsApp(name, price) {
+            // Replace with your actual WhatsApp number
+            const phoneNumber = "923327606015"; 
+            const message = `Hello! I want to order:\n\n*Product:* ${name}\n*Price:* RS ${price}\n\nPlease confirm my order.`;
+            const whatsappURL = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
+            window.open(whatsappURL, '_blank');
+        }
+
+        function filterProducts() {
+            const query = document.getElementById('searchInput').value.toLowerCase();
+            const products = document.querySelectorAll('.product-card');
+            let found = false;
+
+            products.forEach(product => {
+                const name = product.querySelector('.product-name').innerText.toLowerCase();
+                if (name.includes(query)) {
+                    product.style.display = 'block';
+                    found = true;
+                } else {
+                    product.style.display = 'none';
+                }
+            });
+            document.getElementById('noResults').style.display = found ? 'none' : 'block';
+        }
+
+        function filterCategory(category) {
+            const products = document.querySelectorAll('.product-card');
+            const buttons = document.querySelectorAll('.cat-btn');
+
+            buttons.forEach(btn => {
+                if (btn.innerText.trim().toUpperCase() === category.toUpperCase()) {
+                    btn.classList.add('bg-orange-600', 'text-white', 'shadow-lg', 'shadow-orange-600/20');
+                    btn.classList.remove('bg-zinc-900', 'text-zinc-400', 'border-white/5');
+                } else {
+                    btn.classList.remove('bg-orange-600', 'text-white', 'shadow-lg', 'shadow-orange-600/20');
+                    btn.classList.add('bg-zinc-900', 'text-zinc-400', 'border-white/5');
+                }
+            });
+
+            products.forEach(product => {
+                const productCat = product.getAttribute('data-category');
+                if (category === 'ALL' || productCat === category) {
+                    product.style.display = 'block';
+                } else {
+                    product.style.display = 'none';
+                }
+            });
+        }
+    </script>
+</body>
+</html>

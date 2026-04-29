@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Admin | Pro Store</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .glass { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.05); }
+        .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 100; align-items: center; justify-content: center; }
+    </style>
+</head>
+<body class="bg-[#050505] text-white no-scrollbar">
+    <nav class="flex justify-between items-center px-10 py-6 border-b border-white/5 sticky top-0 bg-black/90 z-50">
+        <div class="text-xl font-black italic uppercase">PRO<span class="text-orange-600">ADMIN</span></div>
+        <div class="flex gap-4">
+            <button onclick="document.getElementById('catModal').style.display='flex'" class="bg-blue-600 text-white px-6 py-2 rounded-full font-black text-[10px] uppercase hover:bg-blue-700 transition">
+                📂 Manage Catalog
+            </button>
+            
+            <form action="/delete_all_products" method="post" onsubmit="return confirm('Delete all products?')">
+                <button type="submit" class="bg-red-600 text-white px-6 py-2 rounded-full text-[10px] font-black uppercase hover:bg-red-700 transition">Clear Store</button>
+            </form>
+            
+            <a href="/" class="bg-white text-black px-6 py-2 rounded-full font-black text-[10px] uppercase">View Store</a>
+        </div>
+    </nav>
+
+    <main class="max-w-6xl mx-auto p-10 space-y-10">
+        <section class="glass p-8 rounded-[2rem]">
+            <h2 class="text-[10px] font-black uppercase text-orange-600 mb-6">📢 Edit Banner</h2>
+            <form action="/update_ad" method="post" class="grid grid-cols-2 gap-4">
+                <input type="text" name="title" value="{{ ad.title }}" class="bg-black border border-white/10 p-4 rounded-xl">
+                <input type="text" name="price" value="{{ ad.price }}" class="bg-black border border-white/10 p-4 rounded-xl">
+                <input type="text" name="image" value="{{ ad.image }}" class="col-span-2 bg-black border border-white/10 p-4 rounded-xl">
+                <button type="submit" class="col-span-2 bg-orange-600 py-4 rounded-xl font-black uppercase text-[10px]">Save Banner</button>
+            </form>
+        </section>
+
+        <section class="glass p-8 rounded-[2rem]">
+            <h2 class="text-[10px] font-black uppercase text-orange-600 mb-6">📦 Inventory</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                {% for item in items %}
+                <div class="bg-zinc-900 p-4 rounded-2xl flex items-center justify-between border border-white/5">
+                    <div class="flex items-center gap-3">
+                        <img src="{{ item.image }}" class="w-10 h-10 rounded-lg object-cover">
+                        <div>
+                            <p class="text-[9px] font-black uppercase">{{ item.name }}</p>
+                            <p class="text-[7px] text-zinc-500 uppercase">{{ item.category }}</p>
+                        </div>
+                    </div>
+                    <button onclick="openEdit('{{ item.id }}','{{ item.name }}','{{ item.price }}','{{ item.discount }}','{{ item.category }}','{{ item.image }}','{{ item.stock }}')" class="p-2 bg-white/5 rounded-lg">✏️</button>
+                </div>
+                {% endfor %}
+            </div>
+        </section>
+
+        <section class="glass p-8 rounded-[2rem]">
+            <h2 class="text-[10px] font-black uppercase text-orange-600 mb-6">➕ Add Product</h2>
+            <form action="/add_product" method="post" class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <input type="text" name="name" placeholder="Name" class="bg-black border border-white/10 p-4 rounded-xl" required>
+                <input type="number" name="price" placeholder="Price" class="bg-black border border-white/10 p-4 rounded-xl" required>
+                
+                <select name="category" class="bg-black border border-white/10 p-4 rounded-xl">
+                    {% for cat in categories %}
+                    <option value="{{ cat }}">{{ cat }}</option>
+                    {% endfor %}
+                </select>
+
+                <select name="stock" class="bg-black border border-white/10 p-4 rounded-xl">
+                    <option value="instock">In Stock</option><option value="outofstock">Out of Stock</option>
+                </select>
+                <input type="text" name="image" placeholder="Image URL" class="col-span-2 md:col-span-3 bg-black border border-white/10 p-4 rounded-xl" required>
+                <button type="submit" class="bg-white text-black font-black uppercase text-[10px] rounded-xl hover:bg-zinc-200 transition">Add Product</button>
+            </form>
+        </section>
+    </main>
+
+    <div id="editModal" class="modal">
+        <div class="bg-zinc-900 p-10 rounded-[2rem] w-full max-w-lg border border-white/10">
+            <form id="editForm" method="post" class="grid grid-cols-2 gap-4">
+                <input type="text" name="name" id="editName" class="bg-black border border-white/10 p-4 rounded-xl">
+                <input type="number" name="price" id="editPrice" class="bg-black border border-white/10 p-4 rounded-xl">
+                <input type="number" name="discount" id="editDiscount" class="bg-black border border-white/10 p-4 rounded-xl">
+                <select name="stock" id="editStock" class="bg-black border border-white/10 p-4 rounded-xl">
+                    <option value="instock">In Stock</option><option value="outofstock">Out of Stock</option>
+                </select>
+                
+                <select name="category" id="editCat" class="col-span-2 bg-black border border-white/10 p-4 rounded-xl">
+                    {% for cat in categories %}
+                    <option value="{{ cat }}">{{ cat }}</option>
+                    {% endfor %}
+                </select>
+
+                <input type="text" name="image" id="editImg" class="col-span-2 bg-black border border-white/10 p-4 rounded-xl">
+                <button type="button" onclick="document.getElementById('editModal').style.display='none'" class="bg-zinc-800 py-4 rounded-xl uppercase font-black text-[8px]">Cancel</button>
+                <button type="submit" class="bg-orange-600 py-4 rounded-xl uppercase font-black text-[8px]">Save Changes</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="catModal" class="modal">
+        <div class="bg-zinc-900 p-10 rounded-[2.5rem] w-full max-w-md border border-white/10 shadow-2xl">
+            <h3 class="text-xs font-black uppercase text-blue-500 mb-2">Edit Catalog Names</h3>
+            <p class="text-[10px] text-zinc-500 mb-6 uppercase tracking-widest">Separate names with commas (e.g. Mobile, Laptop)</p>
+            
+            <form action="/update_categories" method="post" class="space-y-6">
+                <input type="text" name="cats" value="{{ categories|join(', ') }}" 
+                       class="w-full bg-black border border-white/10 p-4 rounded-xl outline-none focus:border-blue-500 text-sm">
+                
+                <div class="flex gap-4">
+                    <button type="button" onclick="document.getElementById('catModal').style.display='none'" 
+                            class="flex-1 bg-zinc-800 py-4 rounded-xl uppercase font-black text-[9px]">Cancel</button>
+                    <button type="submit" 
+                            class="flex-1 bg-blue-600 py-4 rounded-xl uppercase font-black text-[9px]">Update Names</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        function openEdit(id, name, price, discount, cat, img, stock) {
+            document.getElementById('editForm').action = "/edit_product/" + id;
+            document.getElementById('editName').value = name;
+            document.getElementById('editPrice').value = price;
+            document.getElementById('editDiscount').value = discount;
+            document.getElementById('editImg').value = img;
+            document.getElementById('editStock').value = stock;
+            document.getElementById('editCat').value = cat;
+            document.getElementById('editModal').style.display = 'flex';
+        }
+    </script>
+</body>
+</html>

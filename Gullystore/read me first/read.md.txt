@@ -1,0 +1,29 @@
+# 🚀 GullyStore Pro - FastAPI E-Commerce with WhatsApp Checkout
+
+GullyStore Pro is a high-performance, modern E-commerce template built with **FastAPI** and **Tailwind CSS**. It is designed for small to medium businesses (like mobile or laptop shops) that want a professional web presence with a direct-to-whatsapp ordering system.
+
+## ✨ Key Features
+* **Google Auth Integration:** Secure customer login using Google One-Tap.
+* **WhatsApp Checkout:** Smooth slide-in receipt that sends order details directly to the owner's WhatsApp.
+* **Professional Admin Panel:** Manage products (Add, Edit, Delete) without touching any code.
+* **Sales Dashboard:** Real-time revenue tracking and order log history.
+* **Responsive UI:** Fully optimized for Mobile and Desktop with a "Dark Mode" premium aesthetic.
+
+---
+
+## 🛠️ Installation & Setup
+
+### 1. Prerequisites
+Make sure you have **Python 3.10+** installed on your system.
+
+### 2. Install Dependencies
+Open your terminal in the project folder and run:
+```bash
+pip install fastapi uvicorn starlette
+### 3. Start the server or website
+when you install the vs code 64 bit verson then 
+run this command in terminal 
+```bash
+uvicorn main:app --reload
+i hope you start the server 
+if you want to change the watsapp number then open main.py find watsapp section and change the number

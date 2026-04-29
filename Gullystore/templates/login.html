@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Login | GullyStore</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+</head>
+<body class="bg-black flex items-center justify-center min-h-screen">
+    <div class="bg-zinc-900 p-12 rounded-[3rem] text-center w-96 border border-white/5">
+        <h2 class="text-orange-600 font-black italic text-2xl mb-8 uppercase">GullyStore</h2>
+        <form action="/login" method="post" class="space-y-4 mb-8">
+            <input type="text" name="username" placeholder="Admin ID" class="w-full p-4 bg-black border border-white/10 rounded-2xl text-white text-xs outline-none focus:border-orange-600">
+            <input type="password" name="password" placeholder="Password" class="w-full p-4 bg-black border border-white/10 rounded-2xl text-white text-xs outline-none focus:border-orange-600">
+            <button class="w-full bg-orange-600 py-4 rounded-2xl font-black text-xs uppercase hover:bg-white hover:text-black transition">Sign In</button>
+        </form>
+        <div class="text-[10px] text-zinc-600 font-bold uppercase mb-6 tracking-widest">--- Or Google Secure Login ---</div>
+        
+        <div id="g_id_onload" 
+             data-client_id="631362570122-pf6lan0ppdvp7raq66tnp1qv4s2d12ji.apps.googleusercontent.com" 
+             data-login_uri="http://localhost:8000/auth/google" 
+             data-auto_prompt="false"></div>
+        <div class="g_id_signin flex justify-center" data-type="standard" data-theme="dark"></div>
+    </div>
+</body>
+</html>
